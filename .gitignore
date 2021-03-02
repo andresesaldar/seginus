@@ -106,3 +106,6 @@ dist
 # IDE & Code Editor files
 .idea/
 .vscode/
+
+# Build Files
+dist/
