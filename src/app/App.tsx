@@ -1,4 +1,11 @@
-import React from "react";
-import "./app.scss";
+import React from 'react';
+import './app.scss';
 
-export const App: React.FC = () => <h1>Hello World!</h1>;
+export const App: React.FC = () => {
+    const title = 'Seginus';
+    return (
+        <div className="w-100 h-100 container py-3">
+            <h1>{title}</h1>
+        </div>
+    );
+};
