@@ -1,19 +1,25 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthenticationActionTypes } from './authentication.actions';
+import { ajax } from 'rxjs/ajax';
+import { environment } from '../../../environments';
 
 interface AuthenticationThunks {
-    authenticationSetTokenWithDelayThunk: AsyncThunk<string, string, any>;
+    requestUserAuthorization: AsyncThunk<string, string, any>;
 }
 
-const authenticationSetTokenWithDelayThunk: AsyncThunk<string, string, any> = createAsyncThunk(
-    AuthenticationActionTypes.AUTHENTICATION_ASYNC_SET_TOKEN,
-    (token): Promise<string> => {
-        return new Promise<string>((resolve) => {
-            setTimeout(() => resolve(`${token}_WITH_DELAY`), 3000);
-        });
+const requestUserAuthorization: AsyncThunk<string, string, any> = createAsyncThunk(
+    AuthenticationActionTypes.REQUEST_USER_AUTHORIZATION,
+    (clientId): Promise<string> => {
+        const { baseSpotifyAuthenticationUrl, whenSpotifyAuthenticationSuccessRedirectUri } = environment;
+        return ajax
+            .get(
+                `${baseSpotifyAuthenticationUrl}/authorize?client_id=${clientId}&response_type=token&redirect_uri=${whenSpotifyAuthenticationSuccessRedirectUri}`,
+            )
+            .toPromise()
+            .then((response) => JSON.stringify(response));
     },
 );
 
 export const authenticationThunks: AuthenticationThunks = {
-    authenticationSetTokenWithDelayThunk,
+    requestUserAuthorization,
 };

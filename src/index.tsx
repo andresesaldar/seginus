@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
 import { store } from './store';
 
 // Plugins
@@ -12,13 +11,14 @@ import './styles.scss';
 
 // Components
 import { App } from './app/App';
+import { Provider } from 'react-redux';
 
 ReactDOM.render(
-    <Provider store={store}>
-        <React.StrictMode>
+    <React.StrictMode>
+        <Provider store={store}>
             <App />
-        </React.StrictMode>
-    </Provider>,
+        </Provider>
+    </React.StrictMode>,
     document.getElementById('root'),
 );
 
