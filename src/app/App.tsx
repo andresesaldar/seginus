@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { Authenticate } from './pages/authenticate/Authenticate';
 import { useSelector } from 'react-redux';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { Authenticate } from './pages';
 import { RootState } from '../store';
 
 export const App: React.FC = () => {

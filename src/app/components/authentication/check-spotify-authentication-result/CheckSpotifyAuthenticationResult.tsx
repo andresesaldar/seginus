@@ -1,12 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState, WeakValidationMap } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { RootActions, RootState } from '../../../../store';
-import { AuthenticatedAppInfo, AuthenticationActionTypes } from '../../../../store/modules/authentication';
+import PropTypes from 'prop-types';
 import { Dispatch } from 'redux';
+import { RootActions, RootState, AuthenticationActionTypes } from '../../../../store';
+import { AuthenticatedAppInfo } from '../../../../interfaces';
 
-export const CheckSpotifyAuthenticationResult: React.FC = () => {
+interface CheckSpotifyAuthenticationResultProps {
+    authCode: string | null;
+    authError: string | null;
+    authState: string | null;
+}
+
+const CheckSpotifyAuthenticationResultPropTypes: WeakValidationMap<CheckSpotifyAuthenticationResultProps> = {
+    authCode: PropTypes.string,
+    authError: PropTypes.string,
+    authState: PropTypes.string,
+};
+
+export const CheckSpotifyAuthenticationResult: React.FC<CheckSpotifyAuthenticationResultProps> = (props) => {
+    const { authCode, authState, authError } = props;
+    const dispatch: Dispatch<RootActions> = useDispatch();
+    const authenticatedAppInfo: AuthenticatedAppInfo | null = useSelector<RootState, AuthenticatedAppInfo | null>(
+        (state) => state.authentication.authenticatedAppInfo,
+    );
+    const spotifyAuthStateValidator: string | null = useSelector<RootState, string | null>(
+        (state) => state.authentication.spotifyAuthStateValidator,
+    );
+    const [isValidStateValidator, setIsValidStateValidator] = useState<boolean>(true);
+    useEffect(() => {
+        if (spotifyAuthStateValidator) {
+            const isValidStateValidator = !!authState && authState === spotifyAuthStateValidator;
+            setIsValidStateValidator(isValidStateValidator);
+        }
+    }, [spotifyAuthStateValidator, authState]);
+    useEffect(() => {
+        // TODO Request token for integrations with Spotify
+    }, []);
     const retryAuthWithSameCredentials = (event: Event) => {
         event.preventDefault();
         if (authenticatedAppInfo) {
@@ -18,25 +48,6 @@ export const CheckSpotifyAuthenticationResult: React.FC = () => {
             });
         }
     };
-    const { search } = useLocation();
-    const authCode = new URLSearchParams(search).get('code');
-    const authState = new URLSearchParams(search).get('state');
-    const authError = new URLSearchParams(search).get('error');
-    const dispatch: Dispatch<RootActions> = useDispatch();
-    const authenticatedAppInfo: AuthenticatedAppInfo | null = useSelector<RootState, AuthenticatedAppInfo | null>(
-        (state) => state.authentication.authenticatedAppInfo,
-    );
-    const spotifyAuthStateValidator: string | null = useSelector<RootState, string | null>(
-        (state) => state.authentication.spotifyAuthStateValidator,
-    );
-    const [isValidStateValidator, setIsValidStateValidator] = useState<boolean>(true);
-    useEffect(() => {
-        spotifyAuthStateValidator
-            ? authState && authState === spotifyAuthStateValidator
-                ? setIsValidStateValidator(true)
-                : setIsValidStateValidator(false)
-            : setIsValidStateValidator(true);
-    });
     return (
         <div className="text-break">
             {authCode && (
@@ -45,7 +56,7 @@ export const CheckSpotifyAuthenticationResult: React.FC = () => {
                     <br />
                 </div>
             )}
-            {authError && (
+            {authError || !isValidStateValidator ? (
                 <div>
                     <span className="text-danger">
                         Ups! Authentication failed:{' '}
@@ -64,7 +75,11 @@ export const CheckSpotifyAuthenticationResult: React.FC = () => {
                         </div>
                     )}
                 </div>
+            ) : (
+                <a href="hello">Prro</a>
             )}
         </div>
     );
 };
+
+CheckSpotifyAuthenticationResult.propTypes = CheckSpotifyAuthenticationResultPropTypes;

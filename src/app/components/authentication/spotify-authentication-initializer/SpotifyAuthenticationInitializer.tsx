@@ -1,19 +1,19 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootActions, RootState } from '../../../../store';
 import { Dispatch } from 'redux';
-import { AuthenticatedAppInfo, AuthenticationActionTypes } from '../../../../store/modules/authentication';
+import { RootActions, RootState, AuthenticationActionTypes } from '../../../../store';
+import { AuthenticatedAppInfo } from '../../../../interfaces';
 
 export const SpotifyAuthenticationInitializer: React.FC = () => {
     const dispatch: Dispatch<RootActions> = useDispatch();
-    const requestingUserAuthentication: boolean = useSelector<RootState, boolean>(
-        (state) => state.authentication.requestingUserAuthentication,
-    );
     const authenticatedAppInfo: AuthenticatedAppInfo | null = useSelector<RootState, AuthenticatedAppInfo | null>(
         (state) => state.authentication.authenticatedAppInfo,
     );
     const spotifyAuthStateValidator: string | null = useSelector<RootState, string | null>(
         (state) => state.authentication.spotifyAuthStateValidator,
+    );
+    const requestingUserAuthentication: boolean = useSelector<RootState, boolean>(
+        (state) => state.authentication.requestingUserAuthentication,
     );
     const [temporalClientIdValue, setTemporalClientIdValue] = useState<string>(
         authenticatedAppInfo ? authenticatedAppInfo.clientId : '',
@@ -23,6 +23,13 @@ export const SpotifyAuthenticationInitializer: React.FC = () => {
     );
     const [useAuthState, setUseAuthState] = useState<boolean>(!!spotifyAuthStateValidator);
     const [authState, setAuthState] = useState<string>(spotifyAuthStateValidator || '');
+    useEffect(() => {
+        if (!useAuthState) {
+            dispatch({
+                type: AuthenticationActionTypes.REMOVE_AUTH_STATE_VALIDATOR,
+            });
+        }
+    }, [useAuthState]);
     const initializeAuthentication = (event: FormEvent) => {
         if (event) event.preventDefault();
         if (
@@ -38,16 +45,9 @@ export const SpotifyAuthenticationInitializer: React.FC = () => {
             });
         }
     };
-    useEffect(() => {
-        if (!useAuthState) {
-            dispatch({
-                type: AuthenticationActionTypes.REMOVE_AUTH_STATE_VALIDATOR,
-            });
-        }
-    }, [useAuthState]);
     return (
         <div>
-            {requestingUserAuthentication && <span className="badge bg-info">Requesting authentication</span>}
+            {requestingUserAuthentication && <span className="badge bg-info mb-2">Requesting authentication</span>}
             <form onSubmit={initializeAuthentication}>
                 <div className="mb-2">
                     <label className="visually-hidden" htmlFor="clientId">

@@ -1,11 +1,12 @@
 import { combineReducers, Reducer } from 'redux';
-import { AuthenticatedAppInfo, AuthenticationState } from './authentication.state';
+import { AuthenticationState } from './authentication.state';
 import {
     AuthenticationActions,
     AuthenticationActionTypes,
     RequestUserAuthorizationAction,
 } from './authentication.actions';
 import { environment } from '../../../environments';
+import { AuthenticatedAppInfo } from '../../../interfaces';
 
 const setAuthenticatedAppInfo: Reducer<AuthenticatedAppInfo | null, AuthenticationActions> = (
     authenticatedAppInfo,

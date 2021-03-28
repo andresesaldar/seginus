@@ -1,4 +1,5 @@
 import { environment } from '../../../environments';
+import { AuthenticatedAppInfo } from '../../../interfaces';
 
 const authenticatedAppInfoFromLocalStorage = (): AuthenticatedAppInfo | null => {
     const authenticatedAppClientIdKey = localStorage.getItem(environment.localStorageAuthenticatedAppClientIdKey);
@@ -12,11 +13,6 @@ const authenticatedAppInfoFromLocalStorage = (): AuthenticatedAppInfo | null => 
           }
         : null;
 };
-
-export interface AuthenticatedAppInfo {
-    clientId: string;
-    clientSecret: string;
-}
 
 export interface AuthenticationState {
     authenticatedAppInfo: AuthenticatedAppInfo | null;

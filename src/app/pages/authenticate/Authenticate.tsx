@@ -1,25 +1,33 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { CheckSpotifyAuthenticationResult } from '../../components/authentication/check-spotify-authentication-result/CheckSpotifyAuthenticationResult';
-import { SpotifyAuthenticationInitializer } from '../../components/authentication/spotify-authentication-initializer/SpotifyAuthenticationInitializer';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { CheckSpotifyAuthenticationResult, SpotifyAuthenticationInitializer } from '../../components';
+import { AuthenticatedAppInfo } from '../../../interfaces';
 import { RootState } from '../../../store';
-import { AuthenticatedAppInfo } from '../../../store/modules/authentication';
 
 export const Authenticate: React.FC = () => {
     const { search } = useLocation();
-    const authCode = new URLSearchParams(search).get('code');
-    const authError = new URLSearchParams(search).get('error');
+    const history = useHistory();
     const authenticatedAppInfo: AuthenticatedAppInfo | null = useSelector<RootState, AuthenticatedAppInfo | null>(
         (state) => state.authentication.authenticatedAppInfo,
     );
+    const [authCode, setAuthCode] = useState<string | null>(null);
+    const [authError, setAuthError] = useState<string | null>(null);
+    const [authState, setAuthState] = useState<string | null>(null);
+    useEffect(() => {
+        const searchParams = new URLSearchParams(search);
+        setAuthCode(searchParams.get('code'));
+        setAuthError(searchParams.get('error'));
+        setAuthState(searchParams.get('state'));
+        history.replace({ search: undefined });
+    }, []);
     return (
         <div>
             {(authCode || authError) &&
             authenticatedAppInfo &&
             authenticatedAppInfo.clientId &&
             authenticatedAppInfo.clientSecret ? (
-                <CheckSpotifyAuthenticationResult />
+                <CheckSpotifyAuthenticationResult authCode={authCode} authError={authError} authState={authState} />
             ) : (
                 <SpotifyAuthenticationInitializer />
             )}

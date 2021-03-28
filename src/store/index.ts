@@ -4,7 +4,7 @@ import {
     authenticationReducer,
     AuthenticationState,
     initialAuthenticationState,
-} from './modules/authentication';
+} from './modules';
 import { configureStore } from '@reduxjs/toolkit';
 
 const initialRootState: RootState = {
@@ -25,3 +25,5 @@ export const store: Store<RootState, RootActions> = configureStore({
     reducer: rootReducer,
     preloadedState: initialRootState,
 });
+
+export * from './modules';
