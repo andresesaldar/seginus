@@ -2,24 +2,36 @@ import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthenticationActionTypes } from './authentication.actions';
 import { ajax } from 'rxjs/ajax';
 import { environment } from '../../../environments';
+import { authenticationAuthorization } from './authentication.getters';
+import { GetTokensResponse } from '../../../interfaces/integration/spotify/get-tokens-response';
 
 interface AuthenticationThunks {
-    requestUserAuthorization: AsyncThunk<string, string, any>;
+    requestAuthorizationTokens: AsyncThunk<GetTokensResponse, string, any>;
 }
 
-const requestUserAuthorization: AsyncThunk<string, string, any> = createAsyncThunk(
-    AuthenticationActionTypes.REQUEST_USER_AUTHORIZATION,
-    (clientId): Promise<string> => {
-        const { baseSpotifyAuthenticationUrl, whenSpotifyAuthenticationSuccessRedirectUri } = environment;
+const { baseSpotifyAuthenticationUrl, whenSpotifyAuthenticationSuccessRedirectUri } = environment;
+
+const requestAuthorizationTokens: AsyncThunk<GetTokensResponse, string, any> = createAsyncThunk(
+    AuthenticationActionTypes.REQUEST_AUTHORIZATION_TOKENS,
+    (code): Promise<GetTokensResponse> => {
         return ajax
-            .get(
-                `${baseSpotifyAuthenticationUrl}/authorize?client_id=${clientId}&response_type=token&redirect_uri=${whenSpotifyAuthenticationSuccessRedirectUri}`,
+            .post(
+                `${baseSpotifyAuthenticationUrl}/api/token`,
+                {
+                    // TODO Pass this as a constant
+                    grant_type: 'authorization_code',
+                    code,
+                    redirect_uri: whenSpotifyAuthenticationSuccessRedirectUri,
+                },
+                {
+                    Authorization: authenticationAuthorization(),
+                },
             )
             .toPromise()
-            .then((response) => JSON.stringify(response));
+            .then((integrationRes) => integrationRes.response);
     },
 );
 
 export const authenticationThunks: AuthenticationThunks = {
-    requestUserAuthorization,
+    requestAuthorizationTokens,
 };

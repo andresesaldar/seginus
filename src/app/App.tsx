@@ -1,29 +1,26 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { Authenticate } from './pages';
 import { RootState } from '../store';
+import { Authenticate, Dashboard } from './pages';
+import { ROUTES } from '../routes';
 
 export const App: React.FC = () => {
     const isLoggedIn = useSelector<RootState, boolean>((state) => state.authentication.isLoggedIn);
     return (
-        <div className="container py-3">
-            <h1>Seginus</h1>
-            <p>Spotify&apos;s integration WebApp made With React</p>
-            <BrowserRouter>
-                <Switch>
-                    {isLoggedIn ? (
-                        <Route exact path="/">
-                            <div>Hola prro</div>
-                        </Route>
-                    ) : (
-                        <Route exact path="/authenticate">
-                            <Authenticate />
-                        </Route>
-                    )}
-                    <Redirect from="*" to={isLoggedIn ? '/' : '/authenticate'} />
-                </Switch>
-            </BrowserRouter>
-        </div>
+        <BrowserRouter>
+            <Switch>
+                {isLoggedIn ? (
+                    <Route exact path={ROUTES.DASHBOARD}>
+                        <Dashboard />
+                    </Route>
+                ) : (
+                    <Route exact path={ROUTES.AUTHENTICATE}>
+                        <Authenticate />
+                    </Route>
+                )}
+                <Redirect from="*" to={isLoggedIn ? ROUTES.DASHBOARD : ROUTES.AUTHENTICATE} />
+            </Switch>
+        </BrowserRouter>
     );
 };

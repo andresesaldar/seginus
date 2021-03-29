@@ -1,10 +1,11 @@
 import React, { useEffect, useState, WeakValidationMap } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Dispatch } from 'redux';
-import { RootActions, RootState, AuthenticationActionTypes } from '../../../../store';
+import { AuthenticationActionTypes, authenticationThunks, RootActions, RootState } from '../../../../store';
 import { AuthenticatedAppInfo } from '../../../../interfaces';
+import { ROUTES } from '../../../../routes';
 
 interface CheckSpotifyAuthenticationResultProps {
     authCode: string | null;
@@ -21,6 +22,8 @@ const CheckSpotifyAuthenticationResultPropTypes: WeakValidationMap<CheckSpotifyA
 export const CheckSpotifyAuthenticationResult: React.FC<CheckSpotifyAuthenticationResultProps> = (props) => {
     const { authCode, authState, authError } = props;
     const dispatch: Dispatch<RootActions> = useDispatch();
+    const history = useHistory();
+    const isLoggedIn: boolean = useSelector<RootState, boolean>((state) => state.authentication.isLoggedIn);
     const authenticatedAppInfo: AuthenticatedAppInfo | null = useSelector<RootState, AuthenticatedAppInfo | null>(
         (state) => state.authentication.authenticatedAppInfo,
     );
@@ -35,8 +38,13 @@ export const CheckSpotifyAuthenticationResult: React.FC<CheckSpotifyAuthenticati
         }
     }, [spotifyAuthStateValidator, authState]);
     useEffect(() => {
-        // TODO Request token for integrations with Spotify
+        if (isValidStateValidator && !!authCode) {
+            dispatch(authenticationThunks.requestAuthorizationTokens(authCode) as any);
+        }
     }, []);
+    useEffect(() => {
+        if (isLoggedIn) history.push(ROUTES.DASHBOARD);
+    }, [isLoggedIn]);
     const retryAuthWithSameCredentials = (event: Event) => {
         event.preventDefault();
         if (authenticatedAppInfo) {
@@ -56,7 +64,7 @@ export const CheckSpotifyAuthenticationResult: React.FC<CheckSpotifyAuthenticati
                     <br />
                 </div>
             )}
-            {authError || !isValidStateValidator ? (
+            {(authError || !isValidStateValidator) && (
                 <div>
                     <span className="text-danger">
                         Ups! Authentication failed:{' '}
@@ -75,8 +83,6 @@ export const CheckSpotifyAuthenticationResult: React.FC<CheckSpotifyAuthenticati
                         </div>
                     )}
                 </div>
-            ) : (
-                <a href="hello">Prro</a>
             )}
         </div>
     );

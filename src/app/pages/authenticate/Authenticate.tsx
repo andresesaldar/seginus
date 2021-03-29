@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { CheckSpotifyAuthenticationResult, SpotifyAuthenticationInitializer } from '../../components';
+import { AppDescription, CheckSpotifyAuthenticationResult, SpotifyAuthenticationInitializer } from '../../components';
 import { AuthenticatedAppInfo } from '../../../interfaces';
 import { RootState } from '../../../store';
 
@@ -22,7 +22,8 @@ export const Authenticate: React.FC = () => {
         history.replace({ search: undefined });
     }, []);
     return (
-        <div>
+        <div className="container py-2">
+            <AppDescription />
             {(authCode || authError) &&
             authenticatedAppInfo &&
             authenticatedAppInfo.clientId &&
