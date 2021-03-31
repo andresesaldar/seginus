@@ -14,7 +14,7 @@ const {
     LSAuthenticatedAppClientIdKey,
     LSAuthenticatedAppClientSecretKey,
     LSSpotifyAuthStateKey,
-    LSSpotifyAuthTokenInfo,
+    LSSpotifyAuthTokenInfoKey,
 } = environment;
 
 const setAuthenticatedAppInfo: Reducer<AuthenticatedAppInfo | null, AuthenticationActions> = (
@@ -101,14 +101,14 @@ const setTokenInfo: Reducer<AuthenticationTokenInfo | null, AuthenticationAction
                 tokenType: action.payload.token_type,
                 scope: action.payload.scope,
             };
-            localStorage.setItem(LSSpotifyAuthTokenInfo, btoa(JSON.stringify(newTokenInfo)));
+            localStorage.setItem(LSSpotifyAuthTokenInfoKey, btoa(JSON.stringify(newTokenInfo)));
             return newTokenInfo;
         case AuthenticationActionTypes.REQUEST_AUTHORIZATION_TOKENS_REJECTED:
             // TODO Check if fail
-            localStorage.removeItem(LSSpotifyAuthTokenInfo);
+            localStorage.removeItem(LSSpotifyAuthTokenInfoKey);
             return null;
         case AuthenticationActionTypes.LOGOUT:
-            localStorage.removeItem(LSSpotifyAuthTokenInfo);
+            localStorage.removeItem(LSSpotifyAuthTokenInfoKey);
             return null;
         default:
             return tokenInfo !== undefined ? tokenInfo : null;

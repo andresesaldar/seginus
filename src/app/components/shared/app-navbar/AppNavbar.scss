@@ -1,0 +1,10 @@
+@import "~bootstrap/scss/bootstrap";
+@import "src/styles";
+
+.app-navbar-brand-label:hover {
+  color: $warning;
+}
+
+.app-navbar-brand {
+  font-size: $font-big-size !important;
+}

@@ -47,12 +47,9 @@ export const SpotifyAuthenticationInitializer: React.FC = () => {
     };
     return (
         <div>
-            {requestingUserAuthentication && <span className="badge bg-info mb-2">Requesting authentication</span>}
+            {requestingUserAuthentication && <span className="badge badge-info mb-2">Requesting authentication</span>}
             <form onSubmit={initializeAuthentication}>
                 <div className="mb-2">
-                    <label className="visually-hidden" htmlFor="clientId">
-                        Client Id
-                    </label>
                     <div className="input-group">
                         <input
                             type="text"
@@ -66,9 +63,6 @@ export const SpotifyAuthenticationInitializer: React.FC = () => {
                     </div>
                 </div>
                 <div className="mb-2">
-                    <label className="visually-hidden" htmlFor="clientSecret">
-                        Client Secret
-                    </label>
                     <div className="input-group">
                         <input
                             type="text"
@@ -83,9 +77,6 @@ export const SpotifyAuthenticationInitializer: React.FC = () => {
                 </div>
                 {useAuthState && (
                     <div className="mb-2">
-                        <label className="visually-hidden" htmlFor="authState">
-                            Auth state
-                        </label>
                         <div className="input-group">
                             <input
                                 type="text"

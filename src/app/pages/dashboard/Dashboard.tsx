@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppNavbar } from '../../components';
+import { AppNavbar, MoleculesList } from '../../components';
 
 export const Dashboard: React.FC = () => {
     // TODO Show Spotify implementations
@@ -7,7 +7,7 @@ export const Dashboard: React.FC = () => {
         <div>
             <AppNavbar />
             <div className="container py-2">
-                <h2>Welcome to your dashboard</h2>
+                <MoleculesList />
             </div>
         </div>
     );

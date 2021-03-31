@@ -2,7 +2,7 @@ import { AuthenticationState, store } from '../../index';
 import { AuthenticatedAppInfo, AuthenticationTokenInfo } from '../../../interfaces';
 import { environment } from '../../../environments';
 
-const { LSAuthenticatedAppClientIdKey, LSAuthenticatedAppClientSecretKey, LSSpotifyAuthTokenInfo } = environment;
+const { LSAuthenticatedAppClientIdKey, LSAuthenticatedAppClientSecretKey, LSSpotifyAuthTokenInfoKey } = environment;
 
 export const actualAuthenticationState = (): AuthenticationState => store.getState().authentication;
 
@@ -23,6 +23,6 @@ export const authenticatedAppInfoFromLS = (): AuthenticatedAppInfo | null => {
 };
 
 export const tokenInfoFromLS = (): AuthenticationTokenInfo | null => {
-    const authTokenInfo = localStorage.getItem(LSSpotifyAuthTokenInfo);
+    const authTokenInfo = localStorage.getItem(LSSpotifyAuthTokenInfoKey);
     return authTokenInfo ? JSON.parse(atob(authTokenInfo)) : null;
 };

@@ -4,7 +4,10 @@ import reportWebVitals from './reportWebVitals';
 import { store } from './store';
 
 // Plugins
-import 'bootstrap/dist/js/bootstrap.bundle';
+import 'jquery/dist/jquery.slim.min';
+import 'popper.js/dist/umd/popper.min';
+import 'bootstrap/dist/js/bootstrap.min';
+import './assets/plugins/font-awesome';
 
 // Styles
 import './styles.scss';
